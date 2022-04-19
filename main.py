@@ -5,6 +5,8 @@ from flask_cors import CORS
 import router
 import logging
 from logging import handlers
+import global_var
+import error
 # from config import config
 # import db
 # from logging.config import dictConfig
@@ -67,6 +69,7 @@ def create_app():
     app.logger.addHandler(log_handler)
 
     # Register Router Instance
+    app.register_blueprint(error.error_bp)
     app.register_blueprint(router.router)
 
     # Additional Configuration 
@@ -79,13 +82,15 @@ def create_app():
         }
     )
     app.config['hoge'] = 0
-    fuga = {}
-    fuga['hoi'] = 'hai'
-    app.config['fuga'] = fuga
-
+    global_var.g_int = 1
+    global_var.g_obj = {
+        'status': 'main'
+    }
+    global_var.g_array.append('main')
+    global_var.g_str = 'main'
     print('create_app', app.config['hoge'])
     return app
 
-app = create_app()
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', debug=True, port=8080, threaded=True, use_reloader=False)
+    app = create_app()
+    app.run(host='0.0.0.0', debug=True, port=8080, threaded=True, use_reloader=True)
